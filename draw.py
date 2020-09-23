@@ -1,12 +1,12 @@
 from matplotlib.axes import Axes
+from matplotlib.backends.backend_agg import FigureCanvasAgg
 from matplotlib.figure import Figure
 from matplotlib.path import Path
 import matplotlib.patches as patches
 import numpy as np
-from scipy.misc import imresize
+from PIL import Image
 
 from traits.api import HasStrictTraits, Instance, Int, List, Tuple
-
 
 class MplFrameMaker(HasStrictTraits):
     figure = Instance(Figure)
@@ -42,11 +42,11 @@ class MplFrameMaker(HasStrictTraits):
         self._patches.append(stroke_patch)
 
     def draw(self):
-        canvas = self.figure.canvas
+        canvas = FigureCanvasAgg(self.figure)
         canvas.draw()
-        frame = np.fromstring(canvas.tostring_rgb(), dtype=np.uint8, sep='')
-        frame = frame.reshape(canvas.get_width_height()[::-1] + (3,))
-        frame = imresize(frame, self.frame_dims)
+        buf = canvas.buffer_rgba()
+        X = np.asarray(buf)
+        frame = np.array(Image.fromarray(X).resize(self.frame_dims))
         return frame
 
     def clear(self):

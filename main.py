@@ -20,7 +20,7 @@ def stroke_data_to_gif(filename, data, output_size=300, fps=30,
                        brush_radius=60, brush_step=30,
                        stroke_color='k', radical_color='orange'):
 
-    frame_maker = MplFrameMaker(figure=plt.figure(figsize=(10, 10)),
+    frame_maker = MplFrameMaker(figure=plt.figure(figsize=(10, 10), dpi=100),
                                 frame_dims=(output_size, output_size))
     character = from_hanzi_data(data, median_offset=brush_radius)
     xlims, ylims = character.padded_bbox_from_fraction(0.05)
